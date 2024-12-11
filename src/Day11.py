@@ -1,71 +1,86 @@
 
 
-class LinkedList:
-    def __init__(this, value, next = None):
+dp_stones = {}
+
+
+class Stone:
+    def __init__(this, value, remaining_turns):
         this.value = value
-        this.next = next
+        this.remaining_turns = remaining_turns
 
 
 def init_stones(filepath):
     with open(filepath) as file:
         stones = file.read().rstrip().split(" ")
     
-    head = None
-    for stone in stones[::-1]:
-        head = LinkedList(stone, head)
-
-    return head
+    return stones
 
 
-def perform_zero_rule(node):
-    if node.value == "0":
-        node.value = "1"
+def perform_zero_rule(stone):
+    if stone.value == "0":
+        stone.value = "1"
         return True
     return False
 
 
-def perform_spliting_rule(node):
-    if len(node.value) % 2 != 0:
-        return False
+def perform_spliting_rule(stone):
+    if len(stone.value) % 2 != 0:
+        return 0
     
-    lhs = node.value[:int(len(node.value) / 2)]
-    rhs = node.value[int(len(node.value) / 2):]
+    lhs = stone.value[:int(len(stone.value) / 2)]
+    rhs = str(int(stone.value[int(len(stone.value) / 2):]))
 
-    node.value = lhs
-    node.next = LinkedList(str(int(rhs)), node.next)
+    stone.value = lhs
+    number_of_stones = traverse_path(Stone(rhs, stone.remaining_turns - 1))
 
-    return True
+    return number_of_stones
 
 
-def perform_basic_turn(head):
-    while head:
-        are_rules_performed = perform_zero_rule(head) 
-        
-        if not are_rules_performed and perform_spliting_rule(head):
-            are_rules_performed = True
-            head = head.next
+def perform_basic_turn(stone):
+    if perform_zero_rule(stone):
+        return 0
+    
+    number_of_stones = perform_spliting_rule(stone)
+    if number_of_stones > 0:
+        return number_of_stones
+    
+    stone.value = str(int(stone.value) * 2024)
+    return 0
 
-        if not are_rules_performed:
-            head.value = str(int(head.value) * 2024)
-        
-        head = head.next
+
+def traverse_path(stone):
+    if (stone.value, stone.remaining_turns) in dp_stones:
+        return dp_stones[(stone.value, stone.remaining_turns)]
+
+    original_value = stone.value
+    original_turns = stone.remaining_turns
+    number_of_stones = 1
+
+    while stone.remaining_turns > 0:
+        number_of_stones += perform_basic_turn(stone)
+        stone.remaining_turns -= 1
+
+    dp_stones[(original_value, original_turns)] = number_of_stones
+
+    return number_of_stones
+
+
+def blink_n_times(stones, n):
+    number_of_stones = 0
+    for stone in stones:
+        number_of_stones += traverse_path(Stone(stone, n))
+
+    return number_of_stones
 
 
 def star_one(filepath):
-    head_stone = init_stones(filepath)
+    stones = init_stones(filepath)
+    return blink_n_times(stones, 25)
 
-    for _ in range(25):
-        perform_basic_turn(head_stone)
-
-    number_of_stones = 1
-    while head_stone.next:
-        number_of_stones += 1
-        head_stone = head_stone.next
-    
-    return number_of_stones
 
 def star_two(filepath):
-    pass
+    stones = init_stones(filepath)
+    return blink_n_times(stones, 75)
 
 
 if __name__=="__main__":
