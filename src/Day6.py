@@ -13,7 +13,7 @@ def gen_grid(filepath):
             except:
                 pass
             grid.append(list(line.rstrip()))
-    
+
     return (grid, pos)
 
 
@@ -39,7 +39,7 @@ def star_one(filepath):
         if not surroundings.is_in_range(direction, grid):
             break
 
-        if grid[surroundings[direction]] == '#':
+        if grid[surroundings[direction]] == "#":
             direction = turn_nighty_degrees(direction)
         else:
             pos = surroundings[direction]
@@ -66,7 +66,7 @@ def is_infinite_loop(grid, pos):
         if not surroundings.is_in_range(direction, grid):
             return False
 
-        if grid[surroundings[direction]] == '#':
+        if grid[surroundings[direction]] == "#":
             direction = turn_nighty_degrees(direction)
         else:
             pos = surroundings[direction]
@@ -81,16 +81,16 @@ def star_two(filepath):
 
     for j in range(len(grid)):
         for i in range(len(grid[0])):
-            if grid[j][i] == '#' or grid[j][i] == '^':
+            if grid[j][i] == "#" or grid[j][i] == "^":
                 continue
-            grid[j][i] = '#'
+            grid[j][i] = "#"
             if is_infinite_loop(grid, [pos[0], pos[1]]):
                 number_of_loops += 1
-            grid[j][i] = '.'
+            grid[j][i] = "."
 
     return number_of_loops
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     print(star_one("inputs/Day6.txt"))
     print(star_two("inputs/Day6.txt"))

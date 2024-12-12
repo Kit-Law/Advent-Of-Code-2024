@@ -23,7 +23,7 @@ def get_regions(garden):
             region = []
             get_region(garden, (j, i), garden[j][i], seen, region)
             regions.append(region)
-    
+
     return regions
 
 
@@ -37,7 +37,7 @@ def get_perimeter(xs):
         for surrounding in Grids.get_adjacent_points(x):
             if surrounding not in body:
                 perimeter += 1
-    
+
     return perimeter
 
 
@@ -60,13 +60,29 @@ def get_sides(xs):
         if surroundings["S"] not in body and surroundings["E"] not in body:
             number_of_sides += 1
 
-        if surroundings["S"] in body and surroundings["E"] in body and surroundings["SE"] not in body:
+        if (
+            surroundings["S"] in body
+            and surroundings["E"] in body
+            and surroundings["SE"] not in body
+        ):
             number_of_sides += 1
-        if surroundings["S"] in body and surroundings["W"] in body and surroundings["SW"] not in body:
+        if (
+            surroundings["S"] in body
+            and surroundings["W"] in body
+            and surroundings["SW"] not in body
+        ):
             number_of_sides += 1
-        if surroundings["N"] in body and surroundings["E"] in body and surroundings["NE"] not in body:
+        if (
+            surroundings["N"] in body
+            and surroundings["E"] in body
+            and surroundings["NE"] not in body
+        ):
             number_of_sides += 1
-        if surroundings["N"] in body and surroundings["W"] in body and surroundings["NW"] not in body:
+        if (
+            surroundings["N"] in body
+            and surroundings["W"] in body
+            and surroundings["NW"] not in body
+        ):
             number_of_sides += 1
 
     return number_of_sides
@@ -96,6 +112,6 @@ def star_two(filepath):
     return total_price
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     print(star_one("inputs/Day12.txt"))
-    print(star_two("inputs/Day12.txt")) 
+    print(star_two("inputs/Day12.txt"))

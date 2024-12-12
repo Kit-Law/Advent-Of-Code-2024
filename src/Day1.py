@@ -1,5 +1,3 @@
-
-
 def star_one(filepath):
     ls = []
     rs = []
@@ -45,6 +43,6 @@ def star_two(filepath):
     return result
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     print(star_one("inputs/Day1.txt"))
     print(star_two("inputs/Day1.txt"))

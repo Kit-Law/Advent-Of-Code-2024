@@ -5,7 +5,7 @@ def star_one(filepath):
     with open(filepath) as file:
         contents = file.read()
         values = re.findall("mul\(([0-9]+),([0-9]+)\)", contents)
-    
+
     return sum(map(lambda v: int(v[0]) * int(v[1]), values))
 
 
@@ -13,7 +13,7 @@ def star_two(filepath):
     with open(filepath) as file:
         contents = file.read()
         values = re.findall("(mul\(([0-9]+),([0-9]+)\))|(do\(\))|(don't\(\))", contents)
-    
+
     is_do = True
     result = 0
     for value in values:
@@ -27,6 +27,6 @@ def star_two(filepath):
     return result
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     print(star_one("inputs/Day3.txt"))
     print(star_two("inputs/Day3.txt"))

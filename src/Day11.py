@@ -1,5 +1,3 @@
-
-
 dp_stones = {}
 
 
@@ -12,7 +10,7 @@ class Stone:
 def init_stones(filepath, n):
     with open(filepath) as file:
         stones = [Stone(stone, n) for stone in file.read().rstrip().split(" ")]
-    
+
     return stones
 
 
@@ -34,9 +32,9 @@ def perform_zero_rule(stone):
 def perform_splitting_rule(stone):
     if len(stone.value) % 2 != 0:
         return 0
-    
-    lhs = stone.value[:int(len(stone.value) / 2)]
-    rhs = str(int(stone.value[int(len(stone.value) / 2):]))
+
+    lhs = stone.value[: int(len(stone.value) / 2)]
+    rhs = str(int(stone.value[int(len(stone.value) / 2) :]))
 
     stone.value = lhs
     number_of_stones = traverse_path(Stone(rhs, stone.remaining_turns - 1))
@@ -47,11 +45,11 @@ def perform_splitting_rule(stone):
 def perform_basic_turn(stone):
     if perform_zero_rule(stone):
         return 0
-    
+
     number_of_stones = perform_splitting_rule(stone)
     if number_of_stones > 0:
         return number_of_stones
-    
+
     stone.value = str(int(stone.value) * 2024)
     return 0
 
@@ -80,6 +78,6 @@ def star_two(filepath):
     return blink_n_times(filepath, 75)
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     print(star_one("inputs/Day11.txt"))
-    print(star_two("inputs/Day11.txt")) 
+    print(star_two("inputs/Day11.txt"))

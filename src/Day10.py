@@ -13,17 +13,17 @@ def gen_grid(filepath):
         for y, line in enumerate(file):
             zeros += [(y, x) for x, l in enumerate(line) if l == "0"]
             grid.append([int(l) for l in line.rstrip()])
-    
+
     return zeros
 
 
-def traverse_steps(pos, current_level, all_paths = False):
+def traverse_steps(pos, current_level, all_paths=False):
     if current_level == 9:
         if not all_paths and pos in seen:
             return 0
         seen.add(pos)
         return 1
-    
+
     number_of_paths = 0
 
     for neighbor in Grids.get_cardinal_neighbors(pos, grid):
@@ -54,6 +54,6 @@ def star_two(filepath):
     return headtails
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     print(star_one("inputs/Day10.txt"))
-    print(star_two("inputs/Day10.txt")) 
+    print(star_two("inputs/Day10.txt"))

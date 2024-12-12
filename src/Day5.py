@@ -11,13 +11,13 @@ def parse_input_file(filepath):
         for line in file:
             if is_ordering_rule:
                 values = line.rstrip().split("|")
-                if values == ['']:
+                if values == [""]:
                     is_ordering_rule = False
                     continue
                 ordering_rules[values[0]].append(values[1])
             else:
                 lines.append(line.rstrip().split(","))
-    
+
     return (ordering_rules, lines)
 
 
@@ -32,7 +32,7 @@ def check_correct_order(line, ordering_rules):
                     wrong_orders.append((num, rule))
                     break
         seen.add(num)
-    
+
     return wrong_orders
 
 
@@ -66,12 +66,12 @@ def star_two(filepath):
                 for order in wrong_orderings:
                     swap_elements(line, order[0], order[1])
                 wrong_orderings = check_correct_order(line, ordering_rules)
-                
+
             total += int(line[math.floor(len(line) / 2)])
 
     return total
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     print(star_one("inputs/Day5.txt"))
     print(star_two("inputs/Day5.txt"))

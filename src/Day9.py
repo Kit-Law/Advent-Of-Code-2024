@@ -1,5 +1,4 @@
-
-def sum_over_range(a, b, v = 1):
+def sum_over_range(a, b, v=1):
     sum = 0
     for i in range(a, b):
         sum += i * v
@@ -31,7 +30,7 @@ def star_one(filepath):
 
         if id >= len(files):
             break
-        
+
         while files[-1] <= empty:
             final_sum += sum_over_range(index, index + files[-1], len(files) - 1)
             index += files[-1]
@@ -84,6 +83,6 @@ def star_two(filepath):
     return int(final_sum)
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     print(star_one("inputs/Day9.txt"))
     print(star_two("inputs/Day9.txt"))
