@@ -1,13 +1,15 @@
+import Helpers.Grids as Grids
+
 
 def gen_grid(filepath):
-    grid = []
-    pos = [0, 0]
+    grid = Grids.Grid()
+    pos = (0, 0)
 
     with open(filepath) as file:
         for y, line in enumerate(file):
             try:
                 starting_pos = line.index("^")
-                pos = [y, starting_pos]
+                pos = (y, starting_pos)
             except:
                 pass
             grid.append(list(line.rstrip()))
@@ -15,45 +17,33 @@ def gen_grid(filepath):
     return (grid, pos)
 
 
+def turn_nighty_degrees(direction):
+    if direction == "N":
+        return "E"
+    elif direction == "E":
+        return "S"
+    elif direction == "S":
+        return "W"
+    else:
+        return "N"
+
+
 def star_one(filepath):
     grid, pos = gen_grid(filepath)
-    direction = 'N'
+    direction = "N"
     steps = set()
-    steps.add((pos[0], pos[1]))
+    steps.add(pos)
 
     while True:
-        if direction == 'N':
-            if pos[0] - 1 < 0:
-                break
-            if grid[pos[0] - 1][pos[1]] == '#':
-                direction = 'E'
-            else:
-                pos[0] -= 1
-                steps.add((pos[0], pos[1]))
-        elif direction == 'E':
-            if pos[1] + 1 >= len(grid[0]):
-                break
-            if grid[pos[0]][pos[1] + 1] == '#':
-                direction = 'S'
-            else:
-                pos[1] += 1
-                steps.add((pos[0], pos[1]))
-        elif direction == 'S':
-            if pos[0] + 1 >= len(grid):
-                break
-            if grid[pos[0] + 1][pos[1]] == '#':
-                direction = 'W'
-            else:
-                pos[0] += 1
-                steps.add((pos[0], pos[1]))
+        surroundings = Grids.get_adjacent_points(pos)
+        if not surroundings.is_in_range(direction, grid):
+            break
+
+        if grid[surroundings[direction]] == '#':
+            direction = turn_nighty_degrees(direction)
         else:
-            if pos[1] - 1 < 0:
-                break
-            if grid[pos[0]][pos[1] - 1] == '#':
-                direction = 'N'
-            else:
-                pos[1] -= 1
-                steps.add((pos[0], pos[1]))
+            pos = surroundings[direction]
+            steps.add(pos)
 
     return len(steps)
 
@@ -67,47 +57,21 @@ def is_moving_into_loop(steps, pos, direction):
 
 
 def is_infinite_loop(grid, pos):
-    direction = 'N'
+    direction = "N"
     steps = set()
     steps.add((pos[0], pos[1], direction))
 
     while True:
-        if direction == 'N':
-            if pos[0] - 1 < 0:
-                return False
-            if grid[pos[0] - 1][pos[1]] == '#':
-                direction = 'E'
-            else:
-                pos[0] -= 1
-                if is_moving_into_loop(steps, pos, direction):
-                    return True
-        elif direction == 'E':
-            if pos[1] + 1 >= len(grid[0]):
-                return False
-            if grid[pos[0]][pos[1] + 1] == '#':
-                direction = 'S'
-            else:
-                pos[1] += 1
-                if is_moving_into_loop(steps, pos, direction):
-                    return True
-        elif direction == 'S':
-            if pos[0] + 1 >= len(grid):
-                return False
-            if grid[pos[0] + 1][pos[1]] == '#':
-                direction = 'W'
-            else:
-                pos[0] += 1
-                if is_moving_into_loop(steps, pos, direction):
-                    return True
+        surroundings = Grids.get_adjacent_points(pos)
+        if not surroundings.is_in_range(direction, grid):
+            return False
+
+        if grid[surroundings[direction]] == '#':
+            direction = turn_nighty_degrees(direction)
         else:
-            if pos[1] - 1 < 0:
-                return False
-            if grid[pos[0]][pos[1] - 1] == '#':
-                direction = 'N'
-            else:
-                pos[1] -= 1
-                if is_moving_into_loop(steps, pos, direction):
-                    return True
+            pos = surroundings[direction]
+            if is_moving_into_loop(steps, pos, direction):
+                return True
 
 
 def star_two(filepath):

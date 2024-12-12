@@ -81,7 +81,7 @@ def star_two(filepath):
             final_sum += sum_over_range(index, index + file[1], file[0])
         index += file[1]
 
-    return final_sum
+    return int(final_sum)
 
 
 if __name__=="__main__":

@@ -9,11 +9,19 @@ class Stone:
         this.remaining_turns = remaining_turns
 
 
-def init_stones(filepath):
+def init_stones(filepath, n):
     with open(filepath) as file:
-        stones = file.read().rstrip().split(" ")
+        stones = [Stone(stone, n) for stone in file.read().rstrip().split(" ")]
     
     return stones
+
+
+def blink_n_times(filepath, n):
+    number_of_stones = 0
+    for stone in init_stones(filepath, n):
+        number_of_stones += traverse_path(stone)
+
+    return number_of_stones
 
 
 def perform_zero_rule(stone):
@@ -23,7 +31,7 @@ def perform_zero_rule(stone):
     return False
 
 
-def perform_spliting_rule(stone):
+def perform_splitting_rule(stone):
     if len(stone.value) % 2 != 0:
         return 0
     
@@ -40,7 +48,7 @@ def perform_basic_turn(stone):
     if perform_zero_rule(stone):
         return 0
     
-    number_of_stones = perform_spliting_rule(stone)
+    number_of_stones = perform_splitting_rule(stone)
     if number_of_stones > 0:
         return number_of_stones
     
@@ -52,35 +60,24 @@ def traverse_path(stone):
     if (stone.value, stone.remaining_turns) in dp_stones:
         return dp_stones[(stone.value, stone.remaining_turns)]
 
-    original_value = stone.value
-    original_turns = stone.remaining_turns
+    origin = (stone.value, stone.remaining_turns)
     number_of_stones = 1
 
     while stone.remaining_turns > 0:
         number_of_stones += perform_basic_turn(stone)
         stone.remaining_turns -= 1
 
-    dp_stones[(original_value, original_turns)] = number_of_stones
-
-    return number_of_stones
-
-
-def blink_n_times(stones, n):
-    number_of_stones = 0
-    for stone in stones:
-        number_of_stones += traverse_path(Stone(stone, n))
+    dp_stones[origin] = number_of_stones
 
     return number_of_stones
 
 
 def star_one(filepath):
-    stones = init_stones(filepath)
-    return blink_n_times(stones, 25)
+    return blink_n_times(filepath, 25)
 
 
 def star_two(filepath):
-    stones = init_stones(filepath)
-    return blink_n_times(stones, 75)
+    return blink_n_times(filepath, 75)
 
 
 if __name__=="__main__":

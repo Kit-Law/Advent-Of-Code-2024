@@ -1,6 +1,9 @@
+import Helpers.Grids as Grids
 
-grid = []
+
+grid = Grids.Grid()
 seen = set()
+
 
 def gen_grid(filepath):
     zeros = []
@@ -23,14 +26,9 @@ def traverse_steps(pos, current_level, all_paths = False):
     
     number_of_paths = 0
 
-    if pos[0] + 1 < len(grid) and grid[pos[0] + 1][pos[1]] == current_level + 1:
-        number_of_paths += traverse_steps((pos[0] + 1, pos[1]), current_level + 1, all_paths)
-    if pos[0] - 1 >= 0 and grid[pos[0] - 1][pos[1]] == current_level + 1:
-        number_of_paths += traverse_steps((pos[0] - 1, pos[1]), current_level + 1, all_paths)
-    if pos[1] + 1 < len(grid[0]) and grid[pos[0]][pos[1] + 1] == current_level + 1:
-        number_of_paths += traverse_steps((pos[0], pos[1] + 1), current_level + 1, all_paths)
-    if pos[1] - 1 >= 0 and grid[pos[0]][pos[1] - 1] == current_level + 1:
-        number_of_paths += traverse_steps((pos[0], pos[1] - 1), current_level + 1, all_paths)
+    for neighbor in Grids.get_cardinal_neighbors(pos, grid):
+        if grid[neighbor] == current_level + 1:
+            number_of_paths += traverse_steps(neighbor, current_level + 1, all_paths)
 
     return number_of_paths
 

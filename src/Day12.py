@@ -1,30 +1,15 @@
-
-
-def gen_garden(filepath):
-    garden = []
-
-    with open(filepath) as file:
-        for line in file:
-            garden.append(list(line.rstrip()))
-    
-    return garden
+import Helpers.Grids as Grids
 
 
 def get_region(garden, plant, type, seen, region):
-    if garden[plant[0]][plant[1]] != type or plant in seen:
+    if garden[plant] != type or plant in seen:
         return
 
     region.append(plant)
     seen.add(plant)
 
-    if plant[1] > 0:
-        get_region(garden, (plant[0], plant[1] - 1), type, seen, region)
-    if plant[1] + 1 < len(garden[0]):
-        get_region(garden, (plant[0], plant[1] + 1), type, seen, region)
-    if plant[0] > 0:
-        get_region(garden, (plant[0] - 1, plant[1]), type, seen, region)
-    if plant[0] + 1 < len(garden):
-        get_region(garden, (plant[0] + 1, plant[1]), type, seen, region)
+    for neighbor in Grids.get_cardinal_neighbors(plant, garden):
+        get_region(garden, neighbor, type, seen, region)
 
 
 def get_regions(garden):
@@ -49,14 +34,9 @@ def get_perimeter(xs):
     for x in xs:
         body.add(x)
     for x in xs:
-        if (x[0] - 1, x[1]) not in body:
-            perimeter += 1
-        if (x[0], x[1] - 1) not in body:
-            perimeter += 1
-        if (x[0], x[1] + 1) not in body:
-            perimeter += 1
-        if (x[0] + 1, x[1]) not in body:
-            perimeter += 1
+        for surrounding in Grids.get_adjacent_points(x):
+            if surrounding not in body:
+                perimeter += 1
     
     return perimeter
 
@@ -69,29 +49,31 @@ def get_sides(xs):
         body.add(x)
 
     for x in xs:
-        if (x[0] - 1, x[1]) not in body and (x[0], x[1] - 1) not in body:
+        surroundings = Grids.get_adjacent_points(x, True)
+
+        if surroundings["N"] not in body and surroundings["W"] not in body:
             number_of_sides += 1
-        if (x[0] - 1, x[1]) not in body and (x[0], x[1] + 1) not in body:
+        if surroundings["N"] not in body and surroundings["E"] not in body:
             number_of_sides += 1
-        if (x[0] + 1, x[1]) not in body and (x[0], x[1] - 1) not in body:
+        if surroundings["S"] not in body and surroundings["W"] not in body:
             number_of_sides += 1
-        if (x[0] + 1, x[1]) not in body and (x[0], x[1] + 1) not in body:
+        if surroundings["S"] not in body and surroundings["E"] not in body:
             number_of_sides += 1
 
-        if (x[0] + 1, x[1]) in body and (x[0], x[1] + 1) in body and (x[0] + 1, x[1] + 1) not in body:
+        if surroundings["S"] in body and surroundings["E"] in body and surroundings["SE"] not in body:
             number_of_sides += 1
-        if (x[0] + 1, x[1]) in body and (x[0], x[1] - 1) in body and (x[0] + 1, x[1] - 1) not in body:
+        if surroundings["S"] in body and surroundings["W"] in body and surroundings["SW"] not in body:
             number_of_sides += 1
-        if (x[0] - 1, x[1]) in body and (x[0], x[1] + 1) in body and (x[0] - 1, x[1] + 1) not in body:
+        if surroundings["N"] in body and surroundings["E"] in body and surroundings["NE"] not in body:
             number_of_sides += 1
-        if (x[0] - 1, x[1]) in body and (x[0], x[1] - 1) in body and (x[0] - 1, x[1] - 1) not in body:
+        if surroundings["N"] in body and surroundings["W"] in body and surroundings["NW"] not in body:
             number_of_sides += 1
 
     return number_of_sides
 
 
 def star_one(filepath):
-    garden = gen_garden(filepath)
+    garden = Grids.read_grid_from_file(filepath)
     regions = get_regions(garden)
 
     total_price = 0
@@ -103,7 +85,7 @@ def star_one(filepath):
 
 
 def star_two(filepath):
-    garden = gen_garden(filepath)
+    garden = Grids.read_grid_from_file(filepath)
     regions = get_regions(garden)
 
     total_price = 0
