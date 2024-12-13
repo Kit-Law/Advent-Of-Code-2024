@@ -34,43 +34,15 @@ def liner_alg_solve_machine(a, b, x, y):
     return num_a_presses * 3 + num_b_presses
 
 
-def get_tokens_used(high_prio_move, low_prio_move, target):
-    tokens_used = 0
-
-    while True:
-        target[0] -= high_prio_move[0]
-        target[1] -= high_prio_move[1]
-        tokens_used += high_prio_move[2]
-
-        if (
-            target[0] % low_prio_move[0] == 0
-            and target[1] % low_prio_move[1] == 0
-            and target[0] / low_prio_move[0] == target[1] / low_prio_move[1]
-        ):
-            tokens_used += target[0] / low_prio_move[0] * low_prio_move[2]
-            break
-
-        if target[0] < 0:
-            tokens_used = None
-            break
-
-    return tokens_used
-
-
 def star_one(filepath):
     tokens = 0
     instances = read_claw_machines(filepath)
 
     for (a, b), target in instances:
-        a_priority = get_tokens_used(a, b, [target[0], target[1]])
-        b_priority = get_tokens_used(b, a, [target[0], target[1]])
+        tokens_needed = liner_alg_solve_machine(a, b, target[0], target[1])
 
-        if not a_priority and not b_priority:
-            continue
-
-        tokens += (
-            a_priority if a_priority < b_priority and not a_priority else b_priority
-        )
+        if tokens_needed:
+            tokens += tokens_needed
 
     return int(tokens)
 
