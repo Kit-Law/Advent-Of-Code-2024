@@ -3,6 +3,12 @@ class Grid(list):
         if type(point) == int:
             return list.__getitem__(self, point)
         return list.__getitem__(self, point[0])[point[1]]
+    
+    def __setitem__(self, point, value):
+        if type(point) == int:
+            self[point] = value
+        else:
+            self[point[0]][point[1]] = value
 
 
 directions = ["N", "E", "S", "W", "NE", "SE", "SW", "NW"]
